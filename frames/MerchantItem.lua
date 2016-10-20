@@ -6,6 +6,17 @@ local GAP = 4
 local HEIGHT = 21
 local ICONSIZE = 17
 
+local IsDoubleClick
+do
+	local MIN_ELAPSED, MAX_ELAPSED = 0.1, 0.5
+	local last, elapsed = 0.0, 0.0
+	
+	IsDoubleClick = function ()
+		elapsed = GetTime() - last
+		last = GetTime()
+		return (elapsed >= MIN_ELAPSED) and (elapsed <= MAX_ELAPSED)
+	end
+end
 
 local function PriceIsAltCurrency(index)
 	for i=1,MAX_ITEM_COST do
@@ -49,18 +60,21 @@ local function OnClick(self, button)
 	elseif IsModifiedClick() then
 		HandleModifiedItemClick(GetMerchantItemLink(id))
 
-	elseif hasaltcurrency then
-		if not PriceIsAltCurrency(id) and not RequiresConfirmation(id) then
-			-- We're trading an item like [Tricky Treat], not using a "real" currency
-			self:BuyItem()
-		else
-			self.link = GetMerchantItemLink(id)
-			self.texture = self.icon:GetTexture()
-			MerchantFrame_ConfirmExtendedItemCost(self)
-		end
+	elseif IsDoubleClick() then
+		if hasaltcurrency then
+			if not PriceIsAltCurrency(id) and not RequiresConfirmation(id) then
+				-- We're trading an item like [Tricky Treat], not using a "real" currency
+				self:BuyItem()
+			else
+				self.link = GetMerchantItemLink(id)
+				self.texture = self.icon:GetTexture()
+				MerchantFrame_ConfirmExtendedItemCost(self)
+			end
 
-	else
-		self:BuyItem()
+		else
+			self:BuyItem()
+
+		end
 	end
 end
 
