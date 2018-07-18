@@ -214,7 +214,6 @@ function ns.NewMerchantItemFrame(parent)
 
 	local ItemName = frame:CreateFontString(nil, nil, "GameFontNormalSmall")
 	ItemName:SetPoint("LEFT", icon, "RIGHT", GAP, 0)
-	ItemName:SetPoint("RIGHT", AltCurrency, "LEFT", -GAP, 0)
 	ItemName:SetJustifyH("LEFT")
 	frame.ItemName = ItemName
 
